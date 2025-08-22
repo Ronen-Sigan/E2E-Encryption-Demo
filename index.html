@@ -175,13 +175,16 @@
         <!-- Instructions Section -->
         <div class="section space-y-2">
             <h2 class="text-2xl font-bold text-gray-800">How to use this demo:</h2>
-            <ul class="list-disc list-inside space-y-1 text-gray-600">
+            <ol class="list-decimal list-inside space-y-1 text-gray-600">
                 <li>Click <b>"Generate Keys"</b> for both Joe and Jane.</li>
                 <li>Click <b>"Calculate Secret"</b> for both. You'll see they have the same secret!</li>
                 <li>Type a message in Joe's text box and click <b>"Encrypt."</b></li>
                 <li>Click <b>"Send to Jane."</b></li>
                 <li>On Jane's side, click <b>"Decrypt"</b> to see the original message.</li>
-            </ul>
+                <li>Now, have Jane type a message, <b>"Encrypt"</b> it, and <b>"Send to Joe."</b></li>
+                <li>On Joe's side, click <b>"Decrypt"</b> to read her message.</li>
+                <li>To start over, simply refresh the page to generate new keys and try with new messages!</li>
+            </ol>
         </div>
         
         <!-- Main Grid Container -->
@@ -193,7 +196,7 @@
 
                 <!-- Step 1: Key Generation -->
                 <div class="space-y-4 mb-8">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 1: Generate Keys</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">1. Generate Keys</h3>
                     <p class="text-gray-500">Joe secretly chooses a number and generates a public key from it.</p>
                     <div class="flex items-center space-x-2">
                         <div class="input-group flex-grow">
@@ -210,7 +213,7 @@
 
                 <!-- Step 2: Receive Public Key & Calculate Shared Secret -->
                 <div class="space-y-4 mb-8">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 2: Calculate Shared Secret</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">2. Calculate Shared Secret</h3>
                     <p class="text-gray-500">Joe receives Jane's public key and combines it with his private key to create a shared secret.</p>
                     <div class="input-group">
                         <label for="joe-received-public-key">Received Public Key:</label>
@@ -227,10 +230,13 @@
 
                 <!-- Step 3: Encrypt and Send Message -->
                 <div class="space-y-4">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 3: Encrypt & Send Message</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">3. Encrypt & Send Message</h3>
                     <p class="text-gray-500">Using the shared secret, Joe encrypts a message before sending it.</p>
                     <div class="input-group">
-                        <label for="joe-message-input">Message to Encrypt:</label>
+                        <label for="joe-message-input" class="flex justify-between items-center">
+                            <span>Message to Encrypt:</span>
+                            <span class="text-xs text-gray-500 italic">You can edit this text.</span>
+                        </label>
                         <textarea id="joe-message-input" rows="2" placeholder="Type your secret message here..." class="resize-none focus:ring-blue-500"></textarea>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -245,7 +251,7 @@
 
                 <!-- Step 4: Decrypt Received Message -->
                 <div class="space-y-4 mt-8">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 4: Decrypt Message</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">4. Decrypt Message</h3>
                     <div class="input-group">
                         <label for="joe-received-encrypted">Received Encrypted Message:</label>
                         <textarea id="joe-received-encrypted" rows="2" readonly class="bg-gray-100 resize-none"></textarea>
@@ -266,7 +272,7 @@
 
                 <!-- Step 1: Key Generation -->
                 <div class="space-y-4 mb-8">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 1: Generate Keys</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">1. Generate Keys</h3>
                     <p class="text-gray-500">Jane secretly chooses a number and generates a public key from it.</p>
                     <div class="input-group flex items-center space-x-2">
                         <div class="input-group flex-grow">
@@ -283,7 +289,7 @@
 
                 <!-- Step 2: Receive Public Key & Calculate Shared Secret -->
                 <div class="space-y-4 mb-8">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 2: Calculate Shared Secret</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">2. Calculate Shared Secret</h3>
                     <p class="text-gray-500">Jane receives Joe's public key and combines it with her private key to create a shared secret.</p>
                     <div class="input-group">
                         <label for="jane-received-public-key">Received Public Key:</label>
@@ -300,10 +306,13 @@
 
                 <!-- Step 3: Encrypt and Send Message -->
                 <div class="space-y-4">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 3: Encrypt & Send Message</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">3. Encrypt & Send Message</h3>
                     <p class="text-gray-500">Using the shared secret, Jane encrypts a message before sending it.</p>
                     <div class="input-group">
-                        <label for="jane-message-input">Message to Encrypt:</label>
+                        <label for="jane-message-input" class="flex justify-between items-center">
+                            <span>Message to Encrypt:</span>
+                            <span class="text-xs text-gray-500 italic">You can edit this text.</span>
+                        </label>
                         <textarea id="jane-message-input" rows="2" placeholder="Type your secret message here..." class="resize-none focus:ring-pink-500"></textarea>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -318,7 +327,7 @@
 
                 <!-- Step 4: Decrypt Received Message -->
                 <div class="space-y-4 mt-8">
-                    <h3 class="text-xl font-semibold text-gray-700">Step 4: Decrypt Message</h3>
+                    <h3 class="text-xl font-semibold text-gray-700">4. Decrypt Message</h3>
                     <div class="input-group">
                         <label for="jane-received-encrypted">Received Encrypted Message:</label>
                         <textarea id="jane-received-encrypted" rows="2" readonly class="bg-gray-100 resize-none"></textarea>
@@ -677,7 +686,7 @@
         });
 
         document.getElementById('btn-jane-decrypt').addEventListener('click', () => {
-            if (!joe.receivedEncrypted) {
+            if (!jane.receivedEncrypted) {
                 const errorLog = log('Jane has not received a message to decrypt.');
                 showPopup('Error', 'There is no encrypted message to decrypt. Please have Joe send one first.', errorLog);
                 return;
