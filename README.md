@@ -1,5 +1,6 @@
 # E2E-Encryption-Demo
 This interactive demo simplifies end-to-end encryption for educational purposes, showing how two people can secretly agree on a shared key. For simplicity, random integers between 1 and 10 are used for these keys. This key is then used to scramble (encrypt) and unscramble (decrypt) private messages, ensuring only the intended recipient can read them.
+[Demo Link](https://ronen-sigan.github.io/E2E-Encryption-Demo/)
 
 ## How the Encryption Works
 This demo uses two simple cryptographic concepts:
@@ -12,7 +13,7 @@ This is a more complex substitution cipher that uses the shared secret key to de
 1. Click "Generate Keys" for both Joe and Jane.
 2. Click "Calculate Secret" for both. You'll see they have the same secret!
 3. Type a message in Joe's text box and click "Encrypt."
-4 .Click "Send to Jane."
+4. Click "Send to Jane."
 5. On Jane's side, click "Decrypt" to see the original message.
 
 ### Acknowledgments
