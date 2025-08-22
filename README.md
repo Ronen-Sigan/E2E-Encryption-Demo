@@ -2,6 +2,8 @@
 This interactive demo simplifies end-to-end encryption for educational purposes, showing how two people can secretly agree on a shared key. For simplicity, random integers between 1 and 10 are used for these keys. This key is then used to scramble (encrypt) and unscramble (decrypt) private messages, ensuring only the intended recipient can read them.
 [Demo Link](https://ronen-sigan.github.io/E2E-Encryption-Demo/)
 
+WARNING: This is a simplified educational example and should NOT be used for real-world encryption. The cryptographic methods here are simple to demonstrate the principles, not to provide security.
+
 ## How the Encryption Works
 This demo uses two simple cryptographic concepts:
 
