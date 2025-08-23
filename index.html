@@ -31,23 +31,40 @@
 
         /* Button Styling */
         .btn {
-            @apply px-4 py-2 rounded-xl text-xs font-bold text-gray-300 shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95;
+            @apply px-4 py-2 rounded-xl font-bold text-gray-300 transition-all duration-200 transform;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            /* 3D button effect */
+            border-radius: 12px;
+            border-bottom: 3px solid rgba(0,0,0,0.3);
+            box-shadow: 0 5px 0 #5e5e5e;
+            position: relative;
+            top: 0;
+            font-size: 0.75rem; /* Reduced from 15% */
+            color: #fff; /* Changed text color to white */
+        }
+        .btn:hover {
+            top: 0;
+            box-shadow: 0 6px 0 #5e5e5e;
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            top: 2px;
+            box-shadow: 0 2px 0 #5e5e5e;
+            transform: translateY(1px);
         }
         .btn-joe {
             background-image: linear-gradient(to right, #4c51bf, #667eea);
-            @apply hover:from-indigo-600 hover:to-indigo-700;
         }
         .btn-jane {
             background-image: linear-gradient(to right, #ec4899, #f472b6);
-            @apply hover:from-pink-600 hover:to-pink-700;
         }
         .btn-neutral {
             background-image: linear-gradient(to right, #6b7280, #9ca3af);
-            @apply hover:from-gray-600 hover:to-gray-700;
         }
         .btn:disabled {
-            @apply opacity-50 cursor-not-allowed transform-none shadow-none;
+            @apply opacity-50 cursor-not-allowed transform-none;
+            top: 0;
+            box-shadow: 0 3px 0 #5e5e5e; /* Retain 3D effect even when disabled */
         }
 
         /* Input and Output Fields */
@@ -166,7 +183,7 @@
                         <i>Diffie-Hellman Key Exchange (simplified):</i> This process allows two people, like Joe and Jane, to agree on a <b>shared secret</b> key over an insecure channel. Even if a third person sees the exchanged public values, they can't calculate the final shared secret because they don't have the private keys. Our demo uses a simple <i>mod 11</i> calculation to show how both sides can arrive at the same result independently.
                     </li>
                     <li>
-                        <i>Vigenère-like Cipher:</i> This is a more complex <b>substitution cipher</b> that uses the shared secret key to determine a series of shifting values. Instead of a single shift, each letter of the message is shifted by a different amount that repeats in a cycle determined by the key. For real-world encryption, a much more complex and secure algorithm like the <b>Advanced Encryption Standard (AES)</b> is used.
+                        <i>Vigenère-like Cipher:</i> This is a <b>substitution cipher</b> that uses the shared secret key to determine a series of shifting values. Instead of a single shift, each letter of the message is shifted by a different amount that repeats in a cycle determined by the key.
                     </li>
                 </ul>
             </div>
@@ -478,7 +495,7 @@
         
         // Add default text on page load
         window.onload = function() {
-            document.getElementById('joe-message-input').value = "Hi how are you?";
+            document.getElementById('joe-message-input').value = "Hi, how are you?";
             document.getElementById('jane-message-input').value = "Fine. How are you?";
         };
 
@@ -514,9 +531,35 @@
         // The automatic close on outside click has been removed per user request.
 
         // --- Event Listeners and Button Handlers ---
+        
+        const setupEventListeners = () => {
+            // Joe's Actions
+            const btnJoeGenerate = document.getElementById('btn-joe-generate');
+            btnJoeGenerate.addEventListener('click', handleJoeGenerate);
+            btnJoeGenerate.addEventListener('touchstart', (e) => { e.preventDefault(); handleJoeGenerate(); });
+            document.getElementById('btn-joe-calculate').addEventListener('click', handleJoeCalculate);
+            document.getElementById('btn-joe-encrypt').addEventListener('click', handleJoeEncrypt);
+            document.getElementById('btn-joe-send').addEventListener('click', handleJoeSend);
+            document.getElementById('btn-joe-decrypt').addEventListener('click', handleJoeDecrypt);
+            
+            // Jane's Actions
+            const btnJaneGenerate = document.getElementById('btn-jane-generate');
+            btnJaneGenerate.addEventListener('click', handleJaneGenerate);
+            btnJaneGenerate.addEventListener('touchstart', (e) => { e.preventDefault(); handleJaneGenerate(); });
+            document.getElementById('btn-jane-calculate').addEventListener('click', handleJaneCalculate);
+            document.getElementById('btn-jane-encrypt').addEventListener('click', handleJaneEncrypt);
+            document.getElementById('btn-jane-send').addEventListener('click', handleJaneSend);
+            document.getElementById('btn-jane-decrypt').addEventListener('click', handleJaneDecrypt);
+        };
+        
+        window.onload = () => {
+            document.getElementById('joe-message-input').value = "Hi, how are you?";
+            document.getElementById('jane-message-input').value = "Fine. How are you?";
+            setupEventListeners();
+        };
 
-        // Joe's Actions
-        document.getElementById('btn-joe-generate').addEventListener('click', () => {
+        // Handlers
+        function handleJoeGenerate() {
             // Generate a random private key for Joe
             joe.privateKey = generateRandomKey(1, 10);
             document.getElementById('joe-private-key').value = joe.privateKey;
@@ -534,9 +577,29 @@
             const logMsg3 = log(`Joe's public key (${joe.publicKey}) has been sent to Jane.`);
             
             showPopup('Keys Generated and Shared!', 'Joe has created his private key and a public key, which has now been shared with Jane.', `${logMsg1}\n${logMsg2}\n${logMsg3}`);
-        });
+        }
+        
+        function handleJaneGenerate() {
+            // Generate a random private key for Jane
+            jane.privateKey = generateRandomKey(1, 10);
+            document.getElementById('jane-private-key').value = jane.privateKey;
+            
+            // Update the internal state and UI with the public key
+            jane.publicKey = generatePublicKey(jane.privateKey);
+            document.getElementById('jane-public-key').value = jane.publicKey;
 
-        document.getElementById('btn-joe-calculate').addEventListener('click', () => {
+            // Send the public key to Joe
+            document.getElementById('joe-received-public-key').value = jane.publicKey;
+            document.getElementById('btn-joe-calculate').disabled = false;
+
+            const logMsg1 = log(`Jane's private key is ${jane.privateKey}.`);
+            const logMsg2 = log(`Calculation for public key: (${PRIME_NUMBER_G} * ${jane.privateKey}) mod ${PRIME_NUMBER_P} = ${PRIME_NUMBER_G * jane.privateKey} mod ${PRIME_NUMBER_P} = ${jane.publicKey}.`);
+            const logMsg3 = log(`Jane's public key (${jane.publicKey}) has been sent to Joe.`);
+            
+            showPopup('Keys Generated and Shared!', 'Jane has created her private key and a public key, which has now been shared with Joe.', `${logMsg1}\n${logMsg2}\n${logMsg3}`);
+        }
+
+        function handleJoeCalculate() {
             const janePublicKey = parseInt(document.getElementById('joe-received-public-key').value);
             if (!janePublicKey) {
                 const errorLog = log('Please wait for Jane\'s public key to be received.');
@@ -548,9 +611,23 @@
             const logMsg1 = log(`Joe has received Jane's public key (${janePublicKey}) and calculated his shared secret.`);
             const logMsg2 = log(`Calculation for shared secret: (${janePublicKey} * ${joe.privateKey}) mod ${PRIME_NUMBER_P} = ${janePublicKey * joe.privateKey} mod ${PRIME_NUMBER_P} = ${joe.sharedSecret}.`);
             showPopup('Shared Secret Calculated!', `Joe used Jane's public key and his own private key to create a shared secret: ${joe.sharedSecret}.`, `${logMsg1}\n${logMsg2}`);
-        });
+        }
 
-        document.getElementById('btn-joe-encrypt').addEventListener('click', () => {
+        function handleJaneCalculate() {
+            const joePublicKey = parseInt(document.getElementById('jane-received-public-key').value);
+            if (!joePublicKey) {
+                const errorLog = log('Please wait for Joe\'s public key to be received.');
+                showPopup('Error', 'Please wait for Joe\'s public key to be received.', errorLog);
+                return;
+            }
+            jane.sharedSecret = calculateSharedSecret(joePublicKey, jane.privateKey);
+            document.getElementById('jane-shared-secret').value = jane.sharedSecret;
+            const logMsg1 = log(`Jane has received Joe's public key (${joePublicKey}) and calculated her shared secret.`);
+            const logMsg2 = log(`Calculation for shared secret: (${joePublicKey} * ${jane.privateKey}) mod ${PRIME_NUMBER_P} = ${joePublicKey * jane.privateKey} mod ${PRIME_NUMBER_P} = ${jane.sharedSecret}.`);
+            showPopup('Shared Secret Calculated!', `Jane used Joe's public key and her own private key to create a shared secret: ${jane.sharedSecret}.`, `${logMsg1}\n${logMsg2}`);
+        }
+
+        function handleJoeEncrypt() {
             if (!joe.sharedSecret) {
                 const errorLog = log('Joe must first calculate the shared secret.');
                 showPopup('Error', 'Joe must first calculate the shared secret key to encrypt his message.', errorLog);
@@ -578,9 +655,9 @@
             const logMsg2 = log(`The key creates a repeating series of shifts, so each letter is shifted by a different amount.`);
             const logMsg3 = log(`For example, the first letter is shifted by 1, the second by 2, and so on up to a shift of ${joe.sharedSecret}, before the cycle repeats.`);
             showPopup('Message Encrypted!', 'Joe\'s message is now unreadable and encrypted with the shared secret.', `${logMsg1}\n${logMsg2}\n${logMsg3}`);
-        });
+        }
 
-        document.getElementById('btn-joe-send').addEventListener('click', () => {
+        function handleJoeSend() {
             if (!joe.encryptedMessage) {
                 const errorLog = log('Joe must first encrypt a message.');
                 showPopup('Error', 'Please encrypt a message before trying to send it.', errorLog);
@@ -592,9 +669,9 @@
             const logMsg1 = log(`Joe sends his encrypted message to Jane.`);
             const logMsg2 = log(`A potential hacker may only see this encrypted data: "${jane.receivedEncrypted}".`);
             showPopup('Message Sent!', 'The encrypted message has been sent to Jane. Only she can read it!', `${logMsg1}\n${logMsg2}`);
-        });
+        }
 
-        document.getElementById('btn-joe-decrypt').addEventListener('click', () => {
+        function handleJoeDecrypt() {
             if (!joe.receivedEncrypted) {
                 const errorLog = log('Joe has not received a message to decrypt.');
                 showPopup('Error', 'There is no encrypted message to decrypt. Please have Jane send one first.', errorLog);
@@ -604,44 +681,9 @@
             document.getElementById('joe-decrypted-output').value = joe.decryptedMessage;
             const logMsg = log(`Joe decrypted the message from Jane using their shared secret.`);
             showPopup('Message Decrypted!', 'Joe has successfully decrypted the message. He can now read it!', logMsg);
-        });
-
-        // Jane's Actions
-        document.getElementById('btn-jane-generate').addEventListener('click', () => {
-            // Generate a random private key for Jane
-            jane.privateKey = generateRandomKey(1, 10);
-            document.getElementById('jane-private-key').value = jane.privateKey;
-            
-            // Update the internal state and UI with the public key
-            jane.publicKey = generatePublicKey(jane.privateKey);
-            document.getElementById('jane-public-key').value = jane.publicKey;
-
-            // Send the public key to Joe
-            document.getElementById('joe-received-public-key').value = jane.publicKey;
-            document.getElementById('btn-joe-calculate').disabled = false;
-
-            const logMsg1 = log(`Jane's private key is ${jane.privateKey}.`);
-            const logMsg2 = log(`Calculation for public key: (${PRIME_NUMBER_G} * ${jane.privateKey}) mod ${PRIME_NUMBER_P} = ${PRIME_NUMBER_G * jane.privateKey} mod ${PRIME_NUMBER_P} = ${jane.publicKey}.`);
-            const logMsg3 = log(`Jane's public key (${jane.publicKey}) has been sent to Joe.`);
-            
-            showPopup('Keys Generated and Shared!', 'Jane has created her private key and a public key, which has now been shared with Joe.', `${logMsg1}\n${logMsg2}\n${logMsg3}`);
-        });
+        }
         
-        document.getElementById('btn-jane-calculate').addEventListener('click', () => {
-            const joePublicKey = parseInt(document.getElementById('jane-received-public-key').value);
-            if (!joePublicKey) {
-                const errorLog = log('Please wait for Joe\'s public key to be received.');
-                showPopup('Error', 'Please wait for Joe\'s public key to be received.', errorLog);
-                return;
-            }
-            jane.sharedSecret = calculateSharedSecret(joePublicKey, jane.privateKey);
-            document.getElementById('jane-shared-secret').value = jane.sharedSecret;
-            const logMsg1 = log(`Jane has received Joe's public key (${joePublicKey}) and calculated her shared secret.`);
-            const logMsg2 = log(`Calculation for shared secret: (${joePublicKey} * ${jane.privateKey}) mod ${PRIME_NUMBER_P} = ${joePublicKey * jane.privateKey} mod ${PRIME_NUMBER_P} = ${jane.sharedSecret}.`);
-            showPopup('Shared Secret Calculated!', `Jane used Joe's public key and her own private key to create a shared secret: ${jane.sharedSecret}.`, `${logMsg1}\n${logMsg2}`);
-        });
-
-        document.getElementById('btn-jane-encrypt').addEventListener('click', () => {
+        function handleJaneEncrypt() {
             if (!jane.sharedSecret) {
                 const errorLog = log('Jane must first calculate the shared secret.');
                 showPopup('Error', 'Jane must first calculate the shared secret key to encrypt her message.', errorLog);
@@ -669,9 +711,9 @@
             const logMsg2 = log(`The key creates a repeating series of shifts, so each letter is shifted by a different amount.`);
             const logMsg3 = log(`For example, the first letter is shifted by 1, the second by 2, and so on up to a shift of ${jane.sharedSecret}, before the cycle repeats.`);
             showPopup('Message Encrypted!', 'Jane\'s message is now unreadable and encrypted with the shared secret.', `${logMsg1}\n${logMsg2}\n${logMsg3}`);
-        });
+        }
 
-        document.getElementById('btn-jane-send').addEventListener('click', () => {
+        function handleJaneSend() {
             if (!jane.encryptedMessage) {
                 const errorLog = log('Jane must first encrypt a message.');
                 showPopup('Error', 'Please encrypt a message before trying to send it.', errorLog);
@@ -683,9 +725,9 @@
             const logMsg1 = log(`Jane sends her encrypted message to Joe.`);
             const logMsg2 = log(`A potential hacker may only see this encrypted data: "${joe.receivedEncrypted}".`);
             showPopup('Message Sent!', 'The encrypted message has been sent to Joe. Only he can read it!', `${logMsg1}\n${logMsg2}`);
-        });
+        }
 
-        document.getElementById('btn-jane-decrypt').addEventListener('click', () => {
+        function handleJaneDecrypt() {
             if (!jane.receivedEncrypted) {
                 const errorLog = log('Jane has not received a message to decrypt.');
                 showPopup('Error', 'There is no encrypted message to decrypt. Please have Joe send one first.', errorLog);
@@ -695,7 +737,7 @@
             document.getElementById('jane-decrypted-output').value = jane.decryptedMessage;
             const logMsg = log(`Jane decrypted the message from Joe using their shared secret.`);
             showPopup('Message Decrypted!', 'Jane has successfully decrypted the message. She can now read it!', logMsg);
-        });
+        }
     </script>
 </body>
 </html>
