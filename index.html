@@ -3,174 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>End-to-End Encryption Demo</title>
+    <title>E2E Encryption Demo</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* General Body and Container Styling */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* A light, clean background */
-            transition: background-color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: auto;
-            padding: 2rem;
+            padding: 1rem;
         }
         .section {
-            background-color: white;
-            padding: 2rem;
+            background-color: #ffffff;
             border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease-in-out;
+            padding: 2rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
         }
-        .section:hover {
-            transform: translateY(-5px);
+        .input-group {
+            margin-bottom: 1rem;
         }
-
-        /* Button Styling */
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
         .btn {
-            @apply px-4 py-2 rounded-xl font-bold text-gray-300 transition-all duration-200 transform;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-            /* 3D button effect */
-            border-radius: 12px;
-            border-bottom: 3px solid rgba(0,0,0,0.3);
-            box-shadow: 0 5px 0 #5e5e5e;
-            position: relative;
-            top: 0;
-            font-size: 0.75rem; /* Reduced from 15% */
-            color: #fff; /* Changed text color to white */
+            background-image: linear-gradient(to right, #4c51bf, #667eea);
+            color: #ffffff;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
         }
         .btn:hover {
-            top: 0;
-            box-shadow: 0 6px 0 #5e5e5e;
-            transform: translateY(-1px);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
-        .btn:active {
-            top: 2px;
-            box-shadow: 0 2px 0 #5e5e5e;
-            transform: translateY(1px);
-        }
-        .btn-joe {
-            background-image: linear-gradient(to right, #4c51bf, #667eea);
+        .btn:disabled {
+            background-image: none;
+            background-color: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         .btn-jane {
             background-image: linear-gradient(to right, #ec4899, #f472b6);
         }
+        .btn-jane:hover {
+            box-shadow: 0 5px 15px rgba(244, 114, 182, 0.4);
+        }
         .btn-neutral {
             background-image: linear-gradient(to right, #6b7280, #9ca3af);
         }
-        .btn:disabled {
-            @apply opacity-50 cursor-not-allowed transform-none;
-            top: 0;
-            box-shadow: 0 3px 0 #5e5e5e; /* Retain 3D effect even when disabled */
+        .btn-neutral:hover {
+            box-shadow: 0 5px 15px rgba(156, 163, 175, 0.4);
         }
-
-        /* Input and Output Fields */
-        .input-group {
-            @apply mb-5;
-        }
-        .input-group label {
-            @apply block text-sm font-medium text-gray-700 mb-2;
-        }
-        .input-group input, .input-group textarea {
-            @apply w-full p-3 border rounded-lg shadow-sm transition-colors;
-        }
-        #joe-message-input, #jane-message-input {
-            border: 2px solid #6b7280;
-        }
-
-        /* System Log Message Box */
         .message-box {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
             padding: 1.5rem;
             border-radius: 1rem;
-            border: 2px dashed #d1d5db;
-            background-color: #f9fafb;
-            margin-top: 1.5rem;
             font-family: monospace;
             white-space: pre-wrap;
             word-wrap: break-word;
             line-height: 1.5;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
 
-        /* Custom modal for pop-up messages */
-        .modal {
+        /* Animation specific styles */
+        #animation-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: none;
+            background-color: #f0f4f8;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background-color: white;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            transform: scale(0.9);
-            opacity: 0;
-            transition: all 0.3s ease-in-out;
-        }
-        .modal.show .modal-content {
-            transform: scale(1);
+            text-align: center;
+            transition: opacity 0.5s ease-in-out;
             opacity: 1;
         }
-        .modal-close-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1.2rem;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #9ca3af;
-            transition: color 0.2s;
+        .animation-step {
+            display: none;
         }
-        .modal-close-btn:hover {
-            color: #ef4444;
+        .animation-step.active {
+            display: block;
         }
-        .modal.show {
-            display: flex;
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
         }
-        #popup-log {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            white-space: pre-wrap;
-            font-family: monospace;
-            font-size: 0.875rem;
-            color: #6b7280;
-            max-height: 200px;
-            overflow-y: auto;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Encryption Animation */
-        @keyframes encrypt-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(76, 81, 191, 0.4); }
-            50% { box-shadow: 0 0 15px 10px rgba(76, 81, 191, 0.7); }
-            100% { box-shadow: 0 0 0 0 rgba(76, 81, 191, 0.4); }
+        .fly-in-left {
+            animation: flyInLeft 1s ease-out forwards;
         }
-        .animate-encryption {
-            animation: encrypt-pulse 1.2s ease-in-out;
+        .fly-in-right {
+            animation: flyInRight 1s ease-out forwards;
+        }
+        @keyframes flyInLeft {
+            from { transform: translateX(-100vw); }
+            to { transform: translateX(0); }
+        }
+        @keyframes flyInRight {
+            from { transform: translateX(100vw); }
+            to { transform: translateX(0); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        #key-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 5s forwards;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+        #encrypted-message-icon {
+            transition: all 1s ease-in-out;
+        }
+        .pulse-once {
+            animation: pulse-once 1s ease-in-out;
+        }
+        @keyframes pulse-once {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
-<body class="bg-gray-100 p-4 sm:p-8">
+<body class="bg-gray-100">
 
-    <div class="container space-y-10">
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-center text-gray-900 mb-4">🔐 E2E Encryption Demo</h1>
+    <!-- Animation Container -->
+    <div id="animation-container" class="hidden">
+        <h1 id="animation-title" class="text-4xl font-extrabold text-gray-900 mb-6"></h1>
+        <p id="animation-subtitle" class="text-xl text-gray-600 mb-12 max-w-xl"></p>
+        
+        <div id="animation-step-1" class="animation-step">
+            <div class="flex items-center justify-center space-x-8">
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-lock text-5xl text-blue-500 fly-in-left"></i>
+                    <p class="mt-2 text-gray-700 font-bold">Joe's Private Key</p>
+                </div>
+                <div class="text-5xl text-gray-400 opacity-0 transition-opacity duration-1000" id="plus-icon-1">+</div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-lock-open text-5xl text-purple-500 fly-in-right"></i>
+                    <p class="mt-2 text-gray-700 font-bold">Jane's Public Key</p>
+                </div>
+            </div>
+            <div class="text-4xl text-gray-500 mt-8 opacity-0 transition-opacity duration-1000" id="equals-icon-1">=</div>
+            <div class="flex flex-col items-center mt-8 opacity-0 transition-opacity duration-1000" id="secret-key-icon-1">
+                <i class="fas fa-key text-6xl text-green-500 pulse"></i>
+                <p class="mt-2 text-gray-700 font-bold">Shared Secret</p>
+            </div>
+        </div>
+
+        <div id="animation-step-2" class="animation-step">
+            <div class="flex items-center justify-center space-x-12">
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-user-secret text-6xl text-indigo-500 pulse-once"></i>
+                    <p class="mt-2 text-gray-700 font-bold">Joe</p>
+                </div>
+                <div class="relative w-96 h-24">
+                    <div class="absolute w-full h-full flex items-center justify-center">
+                        <i class="fas fa-comment text-6xl text-gray-500 absolute z-10 pulse-once"></i>
+                        <i id="encrypted-message-icon" class="fas fa-lock text-5xl text-yellow-500 absolute opacity-0 scale-0 z-20"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-user-tie text-6xl text-pink-500 pulse-once"></i>
+                    <p class="mt-2 text-gray-700 font-bold">Jane</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="animation-step-3" class="animation-step">
+            <i class="fas fa-key text-6xl text-green-500 pulse-once"></i>
+            <p class="mt-4 text-gray-700 text-2xl font-bold">Shared Secret Key</p>
+        </div>
+        
+        <div id="animation-step-4" class="animation-step">
+            <i class="fas fa-shield-alt text-6xl text-blue-500 pulse-once"></i>
+            <p class="mt-4 text-gray-700 text-2xl font-bold">Complete!</p>
+            <p class="text-xl text-gray-600 mt-2">The shared secret ensures your messages are safe.</p>
+        </div>
+
+        <button id="skip-btn" class="absolute bottom-10 right-10 text-gray-500 hover:text-gray-700 font-semibold px-4 py-2 rounded-lg transition-colors duration-200">
+            End Animation
+        </button>
+    </div>
+
+    <!-- Main Application Content (Initially Hidden) -->
+    <div id="main-content" class="container space-y-10 hidden">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-center text-gray-900 mb-4">🔐 E2E Encryption Demo</h1>
         <p class="text-center text-gray-600 text-lg mb-8">
             This interactive demo simplifies end-to-end encryption for educational purposes, showing how two people can secretly agree on a shared key. For simplicity, random integers between 1 and 10 are used for these keys. This key is then used to scramble (encrypt) and unscramble (decrypt) private messages, ensuring only the intended recipient can read them.
         </p>
-
+        
         <!-- Cryptography Explanations Section -->
         <div class="section">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">How the Encryption Works</h2>
@@ -183,12 +235,12 @@
                         <i>Diffie-Hellman Key Exchange (simplified):</i> This process allows two people, like Joe and Jane, to agree on a <b>shared secret</b> key over an insecure channel. Even if a third person sees the exchanged public values, they can't calculate the final shared secret because they don't have the private keys. Our demo uses a simple <i>mod 11</i> calculation to show how both sides can arrive at the same result independently.
                     </li>
                     <li>
-                        <i>Vigenère-like Cipher:</i> This is a <b>substitution cipher</b> that uses the shared secret key to determine a series of shifting values. Instead of a single shift, each letter of the message is shifted by a different amount that repeats in a cycle determined by the key.
+                        <i>Vigenère-like Cipher:</i> This is a <b>substitution cipher</b> where each letter in the message is shifted by a different amount. The amount of the shift is determined by a **repeating key**. For example, if the key is '3', the first letter is shifted by 1, the second by 2, the third by 3, and the fourth letter is shifted by 1 again, repeating the pattern.
                     </li>
                 </ul>
             </div>
         </div>
-
+        
         <!-- Instructions Section -->
         <div class="section space-y-2">
             <h2 class="text-2xl font-bold text-gray-800">How to use this demo:</h2>
@@ -206,7 +258,7 @@
         
         <!-- Main Grid Container -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
+            
             <!-- Joe's Section -->
             <div id="joe-section" class="section border-4 border-indigo-500">
                 <h2 class="text-3xl font-bold text-indigo-700 mb-6">👨‍💻 Joe</h2>
@@ -265,7 +317,7 @@
                     </div>
                     <button id="btn-joe-send" class="btn btn-neutral w-full">Send to Jane</button>
                 </div>
-
+                
                 <!-- Step 4: Decrypt Received Message -->
                 <div class="space-y-4 mt-8">
                     <h3 class="text-xl font-semibold text-gray-700">4. Decrypt Message</h3>
@@ -377,7 +429,6 @@
             <div id="popup-log"></div>
         </div>
     </div>
-
 
     <script>
         // --- Core Cryptography Simulation ---
@@ -493,13 +544,6 @@
             decryptedMessage: ''
         };
         
-        // Add default text on page load
-        window.onload = function() {
-            document.getElementById('joe-message-input').value = "Hi, how are you?";
-            document.getElementById('jane-message-input').value = "Fine. How are you?";
-        };
-
-
         const log = (message) => {
             const logElement = document.getElementById('system-log');
             const p = document.createElement('p');
@@ -552,13 +596,6 @@
             document.getElementById('btn-jane-decrypt').addEventListener('click', handleJaneDecrypt);
         };
         
-        window.onload = () => {
-            document.getElementById('joe-message-input').value = "Hi, how are you?";
-            document.getElementById('jane-message-input').value = "Fine. How are you?";
-            setupEventListeners();
-        };
-
-        // Handlers
         function handleJoeGenerate() {
             // Generate a random private key for Joe
             joe.privateKey = generateRandomKey(1, 10);
@@ -651,9 +688,9 @@
                 outputElement.classList.remove('animate-encryption');
             }, 1200);
 
-            const logMsg1 = log(`Encrypting the message using a Vigenère-like cipher with a shared secret of ${joe.sharedSecret}.`);
-            const logMsg2 = log(`The key creates a repeating series of shifts, so each letter is shifted by a different amount.`);
-            const logMsg3 = log(`For example, the first letter is shifted by 1, the second by 2, and so on up to a shift of ${joe.sharedSecret}, before the cycle repeats.`);
+            const logMsg1 = log(`Joe is encrypting the message with the shared secret key of ${joe.sharedSecret}.`);
+            const logMsg2 = log(`The shared secret acts like a repeating key for the cipher.`);
+            const logMsg3 = log(`Each letter is shifted by a different amount based on its position, repeating the pattern of the key.`);
             showPopup('Message Encrypted!', 'Joe\'s message is now unreadable and encrypted with the shared secret.', `${logMsg1}\n${logMsg2}\n${logMsg3}`);
         }
 
@@ -707,9 +744,9 @@
                 outputElement.classList.remove('animate-encryption');
             }, 1200);
 
-            const logMsg1 = log(`Encrypting the message using a Vigenère-like cipher with a shared secret of ${jane.sharedSecret}.`);
-            const logMsg2 = log(`The key creates a repeating series of shifts, so each letter is shifted by a different amount.`);
-            const logMsg3 = log(`For example, the first letter is shifted by 1, the second by 2, and so on up to a shift of ${jane.sharedSecret}, before the cycle repeats.`);
+            const logMsg1 = log(`Jane is encrypting the message with the shared secret key of ${jane.sharedSecret}.`);
+            const logMsg2 = log(`The shared secret acts like a repeating key for the cipher.`);
+            const logMsg3 = log(`Each letter is shifted by a different amount based on its position, repeating the pattern of the key.`);
             showPopup('Message Encrypted!', 'Jane\'s message is now unreadable and encrypted with the shared secret.', `${logMsg1}\n${logMsg2}\n${logMsg3}`);
         }
 
@@ -723,12 +760,12 @@
             joe.receivedEncrypted = jane.encryptedMessage;
             document.getElementById('joe-received-encrypted').value = joe.receivedEncrypted;
             const logMsg1 = log(`Jane sends her encrypted message to Joe.`);
-            const logMsg2 = log(`A potential hacker may only see this encrypted data: "${joe.receivedEncrypted}".`);
+            const logMsg2 = log(`A potential hacker may only see this encrypted data: "${jane.receivedEncrypted}".`);
             showPopup('Message Sent!', 'The encrypted message has been sent to Joe. Only he can read it!', `${logMsg1}\n${logMsg2}`);
         }
 
         function handleJaneDecrypt() {
-            if (!jane.receivedEncrypted) {
+            if (!joe.receivedEncrypted) {
                 const errorLog = log('Jane has not received a message to decrypt.');
                 showPopup('Error', 'There is no encrypted message to decrypt. Please have Joe send one first.', errorLog);
                 return;
@@ -738,6 +775,110 @@
             const logMsg = log(`Jane decrypted the message from Joe using their shared secret.`);
             showPopup('Message Decrypted!', 'Jane has successfully decrypted the message. She can now read it!', logMsg);
         }
+
+        // Animation logic
+        const animationContainer = document.getElementById('animation-container');
+        const mainContent = document.getElementById('main-content');
+        const skipBtn = document.getElementById('skip-btn');
+        let currentStepIndex = 0;
+
+        const animationSteps = [
+            { title: "E2E Encryption Demo", subtitle: "A simplified demonstration of how end-to-end encryption works." },
+            { title: "1. Key Exchange", subtitle: "Joe and Jane agree on a shared secret key without ever sending it." },
+            { title: "2. Message Encryption", subtitle: "Joe encrypts a message using the shared secret." },
+            { title: "3. Shared Secret", subtitle: "Only the shared secret can unlock the message. An eavesdropper can't read it." },
+            { title: "Complete!", subtitle: "The shared secret ensures your messages are safe." }
+        ];
+
+        const showStep = (step) => {
+            document.getElementById('animation-title').textContent = step.title;
+            document.getElementById('animation-subtitle').textContent = step.subtitle;
+
+            const steps = document.querySelectorAll('.animation-step');
+            steps.forEach(s => s.classList.remove('active', 'fade-in'));
+            if (currentStepIndex === 1) {
+                document.getElementById('animation-step-1').classList.add('active', 'fade-in');
+            } else if (currentStepIndex === 2) {
+                document.getElementById('animation-step-1').classList.remove('active');
+                document.getElementById('animation-step-2').classList.add('active', 'fade-in');
+            } else if (currentStepIndex === 3) {
+                document.getElementById('animation-step-2').classList.remove('active');
+                document.getElementById('animation-step-3').classList.add('active', 'fade-in');
+            } else if (currentStepIndex === 4) {
+                document.getElementById('animation-step-3').classList.remove('active');
+                document.getElementById('animation-step-4').classList.add('active', 'fade-in');
+            } else {
+                document.getElementById('animation-step-1').classList.remove('active');
+                document.getElementById('animation-step-2').classList.remove('active');
+                document.getElementById('animation-step-3').classList.remove('active');
+                document.getElementById('animation-step-4').classList.remove('active');
+            }
+        };
+
+        const startAnimation = () => {
+            animationContainer.classList.remove('hidden');
+            animationContainer.style.display = 'flex';
+            
+            // Step 1: Initial Intro
+            showStep(animationSteps[currentStepIndex]);
+
+            // Step 2: Key Exchange
+            setTimeout(() => {
+                currentStepIndex++;
+                showStep(animationSteps[currentStepIndex]);
+                setTimeout(() => {
+                    document.getElementById('plus-icon-1').classList.remove('opacity-0');
+                    document.getElementById('equals-icon-1').classList.remove('opacity-0');
+                    document.getElementById('secret-key-icon-1').classList.remove('opacity-0');
+                }, 1000);
+            }, 3000);
+
+            // Step 3: Message Encryption
+            setTimeout(() => {
+                currentStepIndex++;
+                showStep(animationSteps[currentStepIndex]);
+            }, 6000);
+
+            // Step 4: Shared Secret
+            setTimeout(() => {
+                currentStepIndex++;
+                showStep(animationSteps[currentStepIndex]);
+                setTimeout(() => {
+                    const encryptedIcon = document.getElementById('encrypted-message-icon');
+                    encryptedIcon.classList.remove('opacity-0', 'scale-0');
+                    encryptedIcon.classList.add('opacity-100', 'scale-100');
+                }, 1000);
+            }, 9000);
+            
+            // Step 5: Final Call to Action
+            setTimeout(() => {
+                currentStepIndex++;
+                showStep(animationSteps[currentStepIndex]);
+            }, 12000);
+
+            // End of animation
+            setTimeout(() => {
+                skipAnimation();
+            }, 15000);
+        };
+
+        const skipAnimation = () => {
+            animationContainer.classList.add('hidden');
+            setTimeout(() => {
+                animationContainer.style.display = 'none';
+                mainContent.classList.remove('hidden');
+                document.getElementById('joe-message-input').value = "Hi, how are you?";
+                document.getElementById('jane-message-input').value = "Fine. How are you?";
+                setupEventListeners();
+            }, 500);
+        };
+
+        skipBtn.addEventListener('click', skipAnimation);
+        
+        window.onload = () => {
+            startAnimation();
+        };
+
     </script>
 </body>
 </html>
