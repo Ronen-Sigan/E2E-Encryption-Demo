@@ -22,7 +22,7 @@ This is a more complex substitution cipher that uses the shared secret key to de
 This project was developed with the assistance of an AI coding assistant.
 This approach helped in streamlining the development process and generating boilerplate code.
 
-License
-Use of Font Awesome Free 6.0.0-beta3 by @fontawesome - https://fontawesome.com
+## License
+Use of Font Awesome Free 6.0.0-beta3 by @fontawesome - https://fontawesome.com <BR>
 License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
 Copyright 2021 Fonticons, Inc.
