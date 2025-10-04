@@ -18,7 +18,7 @@ This is a more complex substitution cipher that uses the shared secret key to de
 4. Click "Send to Jane."
 5. On Jane's side, click "Decrypt" to see the original message.
 
-### Acknowledgments
+## Acknowledgments
 This project was developed with the assistance of an AI coding assistant.
 This approach helped in streamlining the development process and generating boilerplate code.
 
