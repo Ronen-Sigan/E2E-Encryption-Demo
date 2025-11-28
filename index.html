@@ -830,7 +830,7 @@
                     document.getElementById('plus-icon-1').classList.remove('opacity-0');
                     document.getElementById('equals-icon-1').classList.remove('opacity-0');
                     document.getElementById('secret-key-icon-1').classList.remove('opacity-0');
-                }, 1000);
+                }, 5000);
             }, 6000);
 
             // Step 3: Message Encryption
@@ -847,7 +847,7 @@
                     const encryptedIcon = document.getElementById('encrypted-message-icon');
                     encryptedIcon.classList.remove('opacity-0', 'scale-0');
                     encryptedIcon.classList.add('opacity-100', 'scale-100');
-                }, 1000);
+                }, 5000);
             }, 18000);
             
             // Step 5: Final Call to Action
@@ -870,7 +870,7 @@
                 document.getElementById('joe-message-input').value = "Hi, how are you?";
                 document.getElementById('jane-message-input').value = "Fine. How are you?";
                 setupEventListeners();
-            }, 1000);
+            }, 5999999000);
         };
 
         skipBtn.addEventListener('click', skipAnimation);
