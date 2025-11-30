@@ -211,8 +211,10 @@
             <p class="text-xl text-gray-600 mt-2">The shared secret ensures your messages are safe.</p>
         </div>
 
-        
-    
+        <button id="skip-btn" class="absolute bottom-10 right-10 text-gray-500 hover:text-gray-700 font-semibold px-4 py-2 rounded-lg transition-colors duration-200">
+            End Animation
+        </button>
+    </div>
 
     <!-- Main Application Content (Initially Hidden) -->
     <div id="main-content" class="container space-y-10 hidden">
@@ -828,14 +830,14 @@
                     document.getElementById('plus-icon-1').classList.remove('opacity-0');
                     document.getElementById('equals-icon-1').classList.remove('opacity-0');
                     document.getElementById('secret-key-icon-1').classList.remove('opacity-0');
-                }, 5000);
-            }, 6000);
+                }, 1000);
+            }, 3000);
 
             // Step 3: Message Encryption
             setTimeout(() => {
                 currentStepIndex++;
                 showStep(animationSteps[currentStepIndex]);
-            }, 12000);
+            }, 6000);
 
             // Step 4: Shared Secret
             setTimeout(() => {
@@ -845,19 +847,19 @@
                     const encryptedIcon = document.getElementById('encrypted-message-icon');
                     encryptedIcon.classList.remove('opacity-0', 'scale-0');
                     encryptedIcon.classList.add('opacity-100', 'scale-100');
-                }, 5000);
-            }, 18000);
+                }, 1000);
+            }, 9000);
             
             // Step 5: Final Call to Action
             setTimeout(() => {
                 currentStepIndex++;
                 showStep(animationSteps[currentStepIndex]);
-            }, 24000);
+            }, 12000);
 
             // End of animation
             setTimeout(() => {
                 skipAnimation();
-            }, 30000);
+            }, 15000);
         };
 
         const skipAnimation = () => {
@@ -868,7 +870,7 @@
                 document.getElementById('joe-message-input').value = "Hi, how are you?";
                 document.getElementById('jane-message-input').value = "Fine. How are you?";
                 setupEventListeners();
-            }, 5999999000);
+            }, 500);
         };
 
         skipBtn.addEventListener('click', skipAnimation);
